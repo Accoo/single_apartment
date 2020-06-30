@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdou.mapper.RoomLeaseMapper" >
+  <resultMap id="BaseResultMap" type="com.gdou.model.RoomLease" >
+    <id column="Lease_Id" property="leaseId" jdbcType="INTEGER" />
+    <result column="Room_Num" property="roomNum" jdbcType="VARCHAR" />
+    <result column="Hirer" property="hirer" jdbcType="INTEGER" />
+    <result column="Hire_Start" property="hireStart" jdbcType="TIMESTAMP" />
+    <result column="Hire_End" property="hireEnd" jdbcType="TIMESTAMP" />
+    <result column="Charge_Type" property="chargeType" jdbcType="VARCHAR" />
+    <result column="Contract_Start" property="contractStart" jdbcType="TIMESTAMP" />
+    <result column="Contract_End" property="contractEnd" jdbcType="TIMESTAMP" />
+    <result column="Hire_Money" property="hireMoney" jdbcType="REAL" />
+    <result column="Room_Deposit" property="roomDeposit" jdbcType="REAL" />
+    <result column="Receivable_Charge" property="receivableCharge" jdbcType="REAL" />
+    <result column="Actual_Charge" property="actualCharge" jdbcType="REAL" />
+    <result column="Charge_Time" property="chargeTime" jdbcType="TIMESTAMP" />
+    <result column="Register" property="register" jdbcType="INTEGER" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Lease_Id, Room_Num, Hirer, Hire_Start, Hire_End, Charge_Type, Contract_Start, Contract_End, 
+    Hire_Money, Room_Deposit, Receivable_Charge, Actual_Charge, Charge_Time, Register, 
+    Remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from room_lease
+    where Lease_Id = #{leaseId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from room_lease
+    where Lease_Id = #{leaseId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.gdou.model.RoomLease" >
+    insert into room_lease (Lease_Id, Room_Num, Hirer, 
+      Hire_Start, Hire_End, Charge_Type, 
+      Contract_Start, Contract_End, Hire_Money, 
+      Room_Deposit, Receivable_Charge, Actual_Charge, 
+      Charge_Time, Register, Remark
+      )
+    values (#{leaseId,jdbcType=INTEGER}, #{roomNum,jdbcType=VARCHAR}, #{hirer,jdbcType=INTEGER}, 
+      #{hireStart,jdbcType=TIMESTAMP}, #{hireEnd,jdbcType=TIMESTAMP}, #{chargeType,jdbcType=VARCHAR}, 
+      #{contractStart,jdbcType=TIMESTAMP}, #{contractEnd,jdbcType=TIMESTAMP}, #{hireMoney,jdbcType=REAL}, 
+      #{roomDeposit,jdbcType=REAL}, #{receivableCharge,jdbcType=REAL}, #{actualCharge,jdbcType=REAL}, 
+      #{chargeTime,jdbcType=TIMESTAMP}, #{register,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.gdou.model.RoomLease" >
+    update room_lease
+    set Room_Num = #{roomNum,jdbcType=VARCHAR},
+      Hirer = #{hirer,jdbcType=INTEGER},
+      Hire_Start = #{hireStart,jdbcType=TIMESTAMP},
+      Hire_End = #{hireEnd,jdbcType=TIMESTAMP},
+      Charge_Type = #{chargeType,jdbcType=VARCHAR},
+      Contract_Start = #{contractStart,jdbcType=TIMESTAMP},
+      Contract_End = #{contractEnd,jdbcType=TIMESTAMP},
+      Hire_Money = #{hireMoney,jdbcType=REAL},
+      Room_Deposit = #{roomDeposit,jdbcType=REAL},
+      Receivable_Charge = #{receivableCharge,jdbcType=REAL},
+      Actual_Charge = #{actualCharge,jdbcType=REAL},
+      Charge_Time = #{chargeTime,jdbcType=TIMESTAMP},
+      Register = #{register,jdbcType=INTEGER},
+      Remark = #{remark,jdbcType=VARCHAR}
+    where Lease_Id = #{leaseId,jdbcType=INTEGER}
+  </update>
+</mapper>

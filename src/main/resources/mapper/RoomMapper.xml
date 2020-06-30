@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdou.mapper.RoomMapper" >
+    <resultMap id="BaseResultMap" type="com.gdou.model.Room" >
+        <id column="Room_Id" property="roomId" jdbcType="INTEGER" />
+        <id column="Room_Number" property="roomNumber" jdbcType="VARCHAR" />
+        <result column="Room_Status" property="roomStatus" jdbcType="INTEGER" />
+        <result column="Room_Location" property="roomLocation" jdbcType="VARCHAR" />
+        <result column="Room_Floor" property="roomFloor" jdbcType="VARCHAR" />
+        <result column="Water_Start" property="waterStart" jdbcType="REAL" />
+        <result column="Electric_Start" property="electricStart" jdbcType="REAL" />
+        <result column="Registrant" property="registrant" jdbcType="VARCHAR" />
+        <result column="Register_Time" property="registerTime" jdbcType="TIMESTAMP" />
+        <result column="Remark" property="remark" jdbcType="VARCHAR" />
+        <association column="Room_TypeId" property="roomType" javaType="com.gdou.model.RoomType" select="com.gdou.mapper.RoomTypeMapper.selectByPrimaryKey">
+            <id column="TypeId" property="typeid" jdbcType="INTEGER" />
+            <result column="Room_TypeName" property="roomTypename" jdbcType="VARCHAR" />
+            <result column="Room_Area" property="roomArea" jdbcType="VARCHAR" />
+            <result column="Room_Deposit" property="roomDeposit" jdbcType="REAL" />
+            <result column="Room_Rent" property="roomRent" jdbcType="REAL" />
+        </association>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.gdou.model.Room" extends="BaseResultMap" >
+        <result column="Room_Images" property="roomImages" jdbcType="LONGVARBINARY" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+    Room_Id, Room_Number, Room_TypeId, Room_Status, Room_Location, Room_Floor, Water_Start,
+    Electric_Start, Registrant, Register_Time, Remark
+  </sql>
+    <sql id="Blob_Column_List" >
+    Room_Images
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="com.gdou.model.RoomKey" >
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from room
+        where Room_Id = #{roomId,jdbcType=INTEGER}
+        and Room_Number = #{roomNumber,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="com.gdou.model.RoomKey" >
+    delete from room
+    where Room_Number = #{roomNumber,jdbcType=VARCHAR}
+  </delete>
+    <select id="selectByNum" resultMap="BaseResultMap" parameterType="com.gdou.model.Room">
+        select
+        <include refid="Base_Column_List" />
+        from room left join room_type
+        on Room_TypeId = TypeId
+        where Room_Number = #{roomNumber,jdbcType=VARCHAR}
+    </select>
+    <select id="search" resultMap="BaseResultMap" parameterType="com.gdou.model.Room">
+        select
+        <include refid="Base_Column_List" />
+        from room left join room_type
+        on Room_TypeId = TypeId
+        <where>
+            <if test="roomNumber!='' and roomNumber!=null">
+                Room_Number = #{roomNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="roomType.typeid!=null">
+             and TypeId = #{roomType.typeid,jdbcType=INTEGER}
+            </if>
+            <if test="roomStatus!=null">
+             and Room_Status = #{roomStatus,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <insert id="insert" parameterType="com.gdou.model.Room" >
+    insert into room (Room_Id, Room_Number, Room_TypeId,
+      Room_Status, Room_Location, Room_Floor,
+      Water_Start, Electric_Start, Registrant,
+      Register_Time, Remark, Room_Images
+      )
+    values (#{roomId,jdbcType=INTEGER}, #{roomNumber,jdbcType=VARCHAR}, #{roomType.typeid,jdbcType=INTEGER},
+      #{roomStatus,jdbcType=INTEGER}, #{roomLocation,jdbcType=VARCHAR}, #{roomFloor,jdbcType=VARCHAR},
+      #{waterStart,jdbcType=REAL}, #{electricStart,jdbcType=REAL}, #{registrant,jdbcType=VARCHAR},
+      #{registerTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{roomImages,jdbcType=LONGVARBINARY}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com.gdou.model.Room" >
+    update room
+    set Room_TypeId = #{roomType.typeid,jdbcType=INTEGER},
+      Room_Status = #{roomStatus,jdbcType=INTEGER},
+      Room_Location = #{roomLocation,jdbcType=VARCHAR},
+      Room_Floor = #{roomFloor,jdbcType=VARCHAR},
+      Water_Start = #{waterStart,jdbcType=REAL},
+      Electric_Start = #{electricStart,jdbcType=REAL},
+      Registrant = #{registrant,jdbcType=VARCHAR},
+      Register_Time = #{registerTime,jdbcType=TIMESTAMP},
+      Remark = #{remark,jdbcType=VARCHAR}
+    where Room_Number = #{roomNumber,jdbcType=VARCHAR}
+  </update>
+</mapper>

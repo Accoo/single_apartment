@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdou.mapper.RoomCheckinMapper" >
+  <resultMap id="BaseResultMap" type="com.gdou.model.RoomCheckin" >
+    <id column="CheckIn_Id" property="checkinId" jdbcType="INTEGER" />
+    <result column="Payment_Type" property="paymentType" jdbcType="INTEGER" />
+    <result column="Payment_Status" property="paymentStatus" jdbcType="INTEGER" />
+    <result column="CheckIn_Length" property="checkinLength" jdbcType="INTEGER" />
+    <result column="CheckIn_time" property="checkinTime" jdbcType="TIMESTAMP" />
+    <result column="CheckIn_Registerant" property="checkinRegisterant" jdbcType="VARCHAR" />
+    <result column="CheckIn_Remark" property="checkinRemark" jdbcType="VARCHAR" />
+    <association column="Room_Num" property="room" javaType="com.gdou.model.Room" select="com.gdou.mapper.RoomMapper.selectByNum">
+      <id column="Room_Id" property="roomId" jdbcType="INTEGER" />
+      <id column="Room_Number" property="roomNumber" jdbcType="VARCHAR" />
+      <result column="Room_Status" property="roomStatus" jdbcType="INTEGER" />
+      <result column="Room_Location" property="roomLocation" jdbcType="VARCHAR" />
+      <result column="Room_Floor" property="roomFloor" jdbcType="VARCHAR" />
+      <result column="Water_Start" property="waterStart" jdbcType="REAL" />
+      <result column="Electric_Start" property="electricStart" jdbcType="REAL" />
+      <result column="Registrant" property="registrant" jdbcType="VARCHAR" />
+      <result column="Register_Time" property="registerTime" jdbcType="TIMESTAMP" />
+      <result column="Remark" property="remark" jdbcType="VARCHAR" />
+      <association column="Room_TypeId" property="roomType" javaType="com.gdou.model.RoomType" select="com.gdou.mapper.RoomTypeMapper.selectByPrimaryKey">
+        <id column="TypeId" property="typeid" jdbcType="INTEGER" />
+        <result column="Room_TypeName" property="roomTypename" jdbcType="VARCHAR" />
+        <result column="Room_Area" property="roomArea" jdbcType="VARCHAR" />
+        <result column="Room_Deposit" property="roomDeposit" jdbcType="REAL" />
+        <result column="Room_Rent" property="roomRent" jdbcType="REAL" />
+      </association>
+    </association>
+    <association column="Lodger_Id" property="lodger" javaType="com.gdou.model.Lodger" select="com.gdou.mapper.LodgerMapper.selectByPrimaryKey">
+      <id column="Id" property="id" jdbcType="INTEGER" />
+      <result column="Roomer_Name" property="roomerName" jdbcType="VARCHAR" />
+      <result column="Roomer_Sex" property="roomerSex" jdbcType="VARCHAR" />
+      <result column="Roomer_Photo" property="roomerPhoto" jdbcType="VARCHAR" />
+      <result column="Roomer_ID" property="roomerId" jdbcType="VARCHAR" />
+      <result column="Roomer_Age" property="roomerAge" jdbcType="INTEGER" />
+      <result column="Mobilephone" property="mobilephone" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CheckIn_Id, Room_Num, Lodger_Id, Payment_Type, Payment_Status, CheckIn_Length, CheckIn_time, 
+    CheckIn_Registerant, CheckIn_Remark
+  </sql>
+  <select id="selectAllEffective" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from ((room_checkin left join lodger on Lodger_Id = id) left join room on Room_Num = Room_Number)left join room_type
+    on Room_TypeId = TypeId
+    where Payment_Status &gt;= 0
+  </select>
+  <select id="selectAllAppoint" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from ((room_checkin left join lodger on Lodger_Id = id) left join room on Room_Num = Room_Number)left join room_type
+    on Room_TypeId = TypeId
+    where Payment_Status &gt;= 0 and Room_Status = 2
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from room_checkin
+    where CheckIn_Id = #{checkinId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByRoomNum" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from ((room_checkin left join lodger on Lodger_Id = id) left join room on Room_Num = Room_Number)left join room_type
+    on Room_TypeId = TypeId
+    where Room_Num = #{room.roomNumber,jdbcType=VARCHAR}
+        and Payment_Status &gt;= 0;
+  </select>
+  <select id="selectByRoomerName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from ((room_checkin left join lodger on Lodger_Id = id) left join room on Room_Num = Room_Number)left join room_type
+    on Room_TypeId = TypeId
+    where Roomer_Name = #{lodger.roomerName,jdbcType=VARCHAR}
+        and Payment_Status &gt;= 0;
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from room_checkin
+    where CheckIn_Id = #{checkinId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.gdou.model.RoomCheckin" >
+    insert into room_checkin (CheckIn_Id, Room_Num, Lodger_Id, 
+      Payment_Type, Payment_Status, CheckIn_Length, 
+      CheckIn_time, CheckIn_Registerant, CheckIn_Remark
+      )
+    values (#{checkinId,jdbcType=INTEGER}, #{room.roomNumber,jdbcType=VARCHAR}, #{lodger.id,jdbcType=INTEGER},
+      #{paymentType,jdbcType=INTEGER}, #{paymentStatus,jdbcType=INTEGER}, #{checkinLength,jdbcType=INTEGER}, 
+      #{checkinTime,jdbcType=TIMESTAMP}, #{checkinRegisterant,jdbcType=VARCHAR}, #{checkinRemark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.gdou.model.RoomCheckin" >
+    update room_checkin
+    set Room_Num = #{room.roomNumber,jdbcType=VARCHAR},
+      Lodger_Id = #{lodger.id,jdbcType=INTEGER},
+      Payment_Type = #{paymentType,jdbcType=INTEGER},
+      Payment_Status = #{paymentStatus,jdbcType=INTEGER},
+      CheckIn_Length = #{checkinLength,jdbcType=INTEGER},
+      CheckIn_time = #{checkinTime,jdbcType=TIMESTAMP},
+      CheckIn_Registerant = #{checkinRegisterant,jdbcType=VARCHAR},
+      CheckIn_Remark = #{checkinRemark,jdbcType=VARCHAR}
+    where CheckIn_Id = #{checkinId,jdbcType=INTEGER}
+  </update>
+</mapper>

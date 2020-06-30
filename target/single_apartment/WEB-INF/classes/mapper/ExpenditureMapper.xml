@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdou.mapper.ExpenditureMapper" >
+  <resultMap id="BaseResultMap" type="com.gdou.model.Expenditure" >
+    <id column="Exp_Id" property="expId" jdbcType="INTEGER" />
+    <result column="Exp_Num" property="expNum" jdbcType="VARCHAR" />
+    <result column="Expend_Type" property="expendType" jdbcType="VARCHAR" />
+    <result column="Expend_Content" property="expendContent" jdbcType="VARCHAR" />
+    <result column="Material_Charge" property="materialCharge" jdbcType="REAL" />
+    <result column="Employee_Charge" property="employeeCharge" jdbcType="REAL" />
+    <result column="Total_Charge" property="totalCharge" jdbcType="REAL" />
+    <result column="Pay_Date" property="payDate" jdbcType="TIMESTAMP" />
+    <result column="Operator" property="operator" jdbcType="VARCHAR" />
+    <association column="Room_Num" property="room" javaType="com.gdou.model.Room" select="com.gdou.mapper.RoomMapper.selectByNum">
+      <id column="Room_Id" property="roomId" jdbcType="INTEGER" />
+      <id column="Room_Number" property="roomNumber" jdbcType="VARCHAR" />
+      <result column="Room_Status" property="roomStatus" jdbcType="INTEGER" />
+      <result column="Room_Location" property="roomLocation" jdbcType="VARCHAR" />
+      <result column="Room_Floor" property="roomFloor" jdbcType="VARCHAR" />
+      <result column="Water_Start" property="waterStart" jdbcType="REAL" />
+      <result column="Electric_Start" property="electricStart" jdbcType="REAL" />
+      <result column="Registrant" property="registrant" jdbcType="VARCHAR" />
+      <result column="Register_Time" property="registerTime" jdbcType="TIMESTAMP" />
+      <result column="Remark" property="remark" jdbcType="VARCHAR" />
+      <association column="Room_TypeId" property="roomType" javaType="com.gdou.model.RoomType" select="com.gdou.mapper.RoomTypeMapper.selectByPrimaryKey">
+        <id column="TypeId" property="typeid" jdbcType="INTEGER" />
+        <result column="Room_TypeName" property="roomTypename" jdbcType="VARCHAR" />
+        <result column="Room_Area" property="roomArea" jdbcType="VARCHAR" />
+        <result column="Room_Deposit" property="roomDeposit" jdbcType="REAL" />
+        <result column="Room_Rent" property="roomRent" jdbcType="REAL" />
+      </association>
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Exp_Id, Exp_Num, Room_Num, Expend_Type, Expend_Content, Material_Charge, Employee_Charge,
+    Total_Charge, Pay_Date, Operator
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from expenditure
+    where Exp_Id = #{expId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByExpNum" resultMap="BaseResultMap" parameterType="com.gdou.model.Expenditure" >
+    select
+    <include refid="Base_Column_List" />
+    from expenditure
+    where Exp_Num = #{expNum,jdbcType=VARCHAR}
+  </select>
+  <select id="search" resultMap="BaseResultMap" parameterType="com.gdou.model.Expenditure">
+    select
+    <include refid="Base_Column_List" />
+    from expenditure left join room
+    on Room_Num = Room_Number
+    <where>
+      <if test="expNum!='' and expNum!=null">
+        Exp_Num = #{expNum,jdbcType=VARCHAR}
+      </if>
+      <if test="room.roomNumber!='' and room.roomNumber!=null">
+        and Room_Num = #{room.roomNumber,jdbcType=VARCHAR}
+      </if>
+      <if test="expendType!='' and expendType!=null">
+        and Expend_Type = #{expendType,jdbcType=VARCHAR}
+      </if>
+      <if test="expendStart!=null">
+        and Pay_Date &gt;= #{expendStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="expendEnd!=null">
+        and Pay_Date &lt;= #{expendEnd,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from expenditure
+    where Exp_Id = #{expId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.gdou.model.Expenditure" >
+    insert into expenditure (Exp_Id, Exp_Num, Room_Num,
+      Expend_Type, Expend_Content, Material_Charge,
+      Employee_Charge, Total_Charge, Pay_Date,
+      Operator)
+    values (#{expId,jdbcType=INTEGER}, #{expNum,jdbcType=VARCHAR}, #{room.roomNumber,jdbcType=VARCHAR},
+      #{expendType,jdbcType=VARCHAR}, #{expendContent,jdbcType=VARCHAR}, #{materialCharge,jdbcType=REAL},
+      #{employeeCharge,jdbcType=REAL}, #{totalCharge,jdbcType=REAL}, #{payDate,jdbcType=TIMESTAMP},
+      #{operator,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.gdou.model.Expenditure" >
+    update expenditure
+    set Exp_Num = #{expNum,jdbcType=VARCHAR},
+      Room_Num = #{room.roomNumber,jdbcType=VARCHAR},
+      Expend_Type = #{expendType,jdbcType=VARCHAR},
+      Expend_Content = #{expendContent,jdbcType=VARCHAR},
+      Material_Charge = #{materialCharge,jdbcType=REAL},
+      Employee_Charge = #{employeeCharge,jdbcType=REAL},
+      Total_Charge = #{totalCharge,jdbcType=REAL},
+      Pay_Date = #{payDate,jdbcType=TIMESTAMP},
+      Operator = #{operator,jdbcType=VARCHAR}
+    where Exp_Id = #{expId,jdbcType=INTEGER}
+  </update>
+</mapper>

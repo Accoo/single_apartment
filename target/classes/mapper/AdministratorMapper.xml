@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdou.mapper.AdministratorMapper" >
+  <resultMap id="BaseResultMap" type="com.gdou.model.Administrator" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="Admin_Account" property="adminAccount" jdbcType="VARCHAR" />
+    <result column="Admin_Password" property="adminPassword" jdbcType="VARCHAR" />
+    <result column="Admin_Name" property="adminName" jdbcType="VARCHAR" />
+    <result column="Admin_ID" property="adminId" jdbcType="VARCHAR" />
+    <result column="Admin_Sex" property="adminSex" jdbcType="VARCHAR" />
+    <result column="Admin_Role" property="adminRole" jdbcType="INTEGER" />
+    <result column="Admin_Phone" property="adminPhone" jdbcType="VARCHAR" />
+    <result column="Register_Time" property="registerTime" jdbcType="TIMESTAMP" />
+    <result column="Login_Status" property="loginStatus" jdbcType="INTEGER" />
+    <result column="Login_Time" property="loginTime" jdbcType="TIMESTAMP" />
+    <result column="Logout_Time" property="logoutTime" jdbcType="TIMESTAMP" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, Admin_Account, Admin_Password, Admin_Name, Admin_ID, Admin_Sex, Admin_Role, Admin_Phone,
+    Register_Time, Login_Status, Login_Time, Logout_Time, Remark
+  </sql>
+  <select id="selectByAccount" resultMap="BaseResultMap" parameterType="com.gdou.model.Administrator">
+    select
+    <include refid="Base_Column_List" />
+    from administrator
+    where Admin_Account = #{adminAccount,jdbcType=VARCHAR}
+  </select>
+  <select id="selectall" resultMap="BaseResultMap" parameterType="com.gdou.model.Administrator">
+    select
+    <include refid="Base_Column_List" />
+    from administrator
+    <if test="orderByClause != null" >
+    order by ${orderByClause}
+    </if>
+  </select>
+  <select id="search" resultMap="BaseResultMap" parameterType="com.gdou.model.Administrator">
+    select
+    <include refid="Base_Column_List" />
+    from administrator
+    <where>
+      <if test="adminName!='' and adminName!=null">
+        Admin_Name = #{adminName,jdbcType=VARCHAR}
+      </if>
+      <if test="adminAccount!='' and adminAccount!=null">
+        and Admin_Account = #{adminAccount,jdbcType=VARCHAR}
+      </if>
+      <if test="adminSex!='' and adminSex!=null">
+        and Admin_Sex = #{adminSex,jdbcType=VARCHAR}
+      </if>
+      <if test="adminRole!='' and adminRole!=null">
+        and Admin_Role = #{adminRole,jdbcType=INTEGER}
+      </if>
+      <if test="registerStart!=null">
+        and Register_Time &gt;= #{registerStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="registerEnd!=null">
+        and Register_Time &lt;= #{registerEnd,jdbcType=TIMESTAMP}
+      </if>
+      <if test="loginStart!=null">
+        and Login_Time &gt;= #{loginStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="loginEnd!=null">
+        and Login_Time &lt;= #{loginEnd,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from administrator
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from administrator
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.gdou.model.Administrator" >
+    insert into administrator (Id, Admin_Account, Admin_Password, 
+      Admin_Name, Admin_ID, Admin_Sex, 
+      Admin_Role, Admin_Phone, Register_Time, 
+      Login_Status, Login_Time, Logout_Time, 
+      Remark)
+    values (#{id,jdbcType=INTEGER}, #{adminAccount,jdbcType=VARCHAR}, #{adminPassword,jdbcType=VARCHAR}, 
+      #{adminName,jdbcType=VARCHAR}, #{adminId,jdbcType=VARCHAR}, #{adminSex,jdbcType=VARCHAR}, 
+      #{adminRole,jdbcType=INTEGER}, #{adminPhone,jdbcType=VARCHAR}, #{registerTime,jdbcType=TIMESTAMP}, 
+      #{loginStatus,jdbcType=INTEGER}, #{loginTime,jdbcType=TIMESTAMP}, #{logoutTime,jdbcType=TIMESTAMP}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.gdou.model.Administrator" >
+    update administrator
+    set Admin_Account = #{adminAccount,jdbcType=VARCHAR},
+      Admin_Password = #{adminPassword,jdbcType=VARCHAR},
+      Admin_Name = #{adminName,jdbcType=VARCHAR},
+      Admin_ID = #{adminId,jdbcType=VARCHAR},
+      Admin_Sex = #{adminSex,jdbcType=VARCHAR},
+      Admin_Role = #{adminRole,jdbcType=INTEGER},
+      Admin_Phone = #{adminPhone,jdbcType=VARCHAR},
+      Register_Time = #{registerTime,jdbcType=TIMESTAMP},
+      Login_Status = #{loginStatus,jdbcType=INTEGER},
+      Login_Time = #{loginTime,jdbcType=TIMESTAMP},
+      Logout_Time = #{logoutTime,jdbcType=TIMESTAMP},
+      Remark = #{remark,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

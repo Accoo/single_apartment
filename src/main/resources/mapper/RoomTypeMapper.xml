@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdou.mapper.RoomTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.gdou.model.RoomType" >
+    <id column="TypeId" property="typeid" jdbcType="INTEGER" />
+    <result column="Room_TypeName" property="roomTypename" jdbcType="VARCHAR" />
+    <result column="Room_Area" property="roomArea" jdbcType="VARCHAR" />
+    <result column="Room_Deposit" property="roomDeposit" jdbcType="REAL" />
+    <result column="Room_Rent" property="roomRent" jdbcType="REAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    TypeId, Room_TypeName, Room_Area, Room_Deposit, Room_Rent
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from room_type
+    where TypeId = #{typeid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from room_type
+    where TypeId = #{typeid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.gdou.model.RoomType" >
+    insert into room_type (TypeId, Room_TypeName, Room_Area,
+      Room_Deposit, Room_Rent)
+    values (#{typeid,jdbcType=INTEGER}, #{roomTypename,jdbcType=VARCHAR}, #{roomArea,jdbcType=VARCHAR},
+      #{roomDeposit,jdbcType=REAL}, #{roomRent,jdbcType=REAL})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.gdou.model.RoomType" >
+    update room_type
+    set Room_TypeName = #{roomTypename,jdbcType=VARCHAR},
+      Room_Area = #{roomArea,jdbcType=VARCHAR},
+      Room_Deposit = #{roomDeposit,jdbcType=REAL},
+      Room_Rent = #{roomRent,jdbcType=REAL}
+    where TypeId = #{typeid,jdbcType=INTEGER}
+  </update>
+</mapper>

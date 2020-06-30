@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdou.mapper.RoomCheckoutMapper" >
+  <resultMap id="BaseResultMap" type="com.gdou.model.RoomCheckout" >
+    <id column="Check_Id" property="checkId" jdbcType="INTEGER" />
+    <result column="Checkout_Deposit" property="checkoutDeposit" jdbcType="REAL" />
+    <result column="Hire_Money" property="hireMoney" jdbcType="REAL" />
+    <result column="Water_Money" property="waterMoney" jdbcType="REAL" />
+    <result column="Electric_Money" property="electricMoney" jdbcType="REAL" />
+    <result column="Checkout_Moey" property="checkoutMoey" jdbcType="REAL" />
+    <result column="Checkout_Date" property="checkoutDate" jdbcType="TIMESTAMP" />
+    <result column="Refund_Date" property="refundDate" jdbcType="TIMESTAMP" />
+    <result column="Operator" property="operator" jdbcType="INTEGER" />
+    <result column="Remark" property="remark" jdbcType="VARCHAR" />
+    <association column="Room_Num" property="room" javaType="com.gdou.model.Room" select="com.gdou.mapper.RoomMapper.selectByNum">
+      <id column="Room_Id" property="roomId" jdbcType="INTEGER" />
+      <id column="Room_Number" property="roomNumber" jdbcType="VARCHAR" />
+      <result column="Room_Status" property="roomStatus" jdbcType="INTEGER" />
+      <result column="Room_Location" property="roomLocation" jdbcType="VARCHAR" />
+      <result column="Room_Floor" property="roomFloor" jdbcType="VARCHAR" />
+      <result column="Water_Start" property="waterStart" jdbcType="REAL" />
+      <result column="Electric_Start" property="electricStart" jdbcType="REAL" />
+      <result column="Registrant" property="registrant" jdbcType="VARCHAR" />
+      <result column="Register_Time" property="registerTime" jdbcType="TIMESTAMP" />
+      <result column="Remark" property="remark" jdbcType="VARCHAR" />
+      <association column="Room_TypeId" property="roomType" javaType="com.gdou.model.RoomType" select="com.gdou.mapper.RoomTypeMapper.selectByPrimaryKey">
+        <id column="TypeId" property="typeid" jdbcType="INTEGER" />
+        <result column="Room_TypeName" property="roomTypename" jdbcType="VARCHAR" />
+        <result column="Room_Area" property="roomArea" jdbcType="VARCHAR" />
+        <result column="Room_Deposit" property="roomDeposit" jdbcType="REAL" />
+        <result column="Room_Rent" property="roomRent" jdbcType="REAL" />
+      </association>
+    </association>
+    <association column="Lodger_Id" property="lodger" javaType="com.gdou.model.Lodger" select="com.gdou.mapper.LodgerMapper.selectByPrimaryKey">
+      <id column="Id" property="id" jdbcType="INTEGER" />
+      <result column="Roomer_Name" property="roomerName" jdbcType="VARCHAR" />
+      <result column="Roomer_Sex" property="roomerSex" jdbcType="VARCHAR" />
+      <result column="Roomer_Photo" property="roomerPhoto" jdbcType="VARCHAR" />
+      <result column="Roomer_ID" property="roomerId" jdbcType="VARCHAR" />
+      <result column="Roomer_Age" property="roomerAge" jdbcType="INTEGER" />
+      <result column="Mobilephone" property="mobilephone" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Check_Id, Room_Num, Checkout_Deposit, Hire_Money, Water_Money, Electric_Money, Checkout_Moey,
+    Checkout_Date, Refund_Date, Lodger_Id, Operator, Remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from room_checkout
+    where Check_Id = #{checkId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from room_checkout
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from room_checkout
+    where Check_Id = #{checkId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.gdou.model.RoomCheckout" >
+    insert into room_checkout (Check_Id, Room_Num, Checkout_Deposit,
+      Hire_Money, Water_Money, Electric_Money,
+      Checkout_Moey, Checkout_Date, Refund_Date,
+      Lodger_Id, Operator, Remark
+      )
+    values (#{checkId,jdbcType=INTEGER}, #{room.roomNumber,jdbcType=VARCHAR}, #{checkoutDeposit,jdbcType=REAL},
+      #{hireMoney,jdbcType=REAL}, #{waterMoney,jdbcType=REAL}, #{electricMoney,jdbcType=REAL},
+      #{checkoutMoey,jdbcType=REAL}, #{checkoutDate,jdbcType=TIMESTAMP}, #{refundDate,jdbcType=TIMESTAMP},
+      #{lodger.id,jdbcType=INTEGER}, #{operator,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.gdou.model.RoomCheckout" >
+    update room_checkout
+    set Room_Num = #{roomNum,jdbcType=VARCHAR},
+      Checkout_Deposit = #{checkoutDeposit,jdbcType=REAL},
+      Hire_Money = #{hireMoney,jdbcType=REAL},
+      Water_Money = #{waterMoney,jdbcType=REAL},
+      Electric_Money = #{electricMoney,jdbcType=REAL},
+      Checkout_Moey = #{checkoutMoey,jdbcType=REAL},
+      Checkout_Date = #{checkoutDate,jdbcType=TIMESTAMP},
+      Refund_Date = #{refundDate,jdbcType=TIMESTAMP},
+      Lodger_Id = #{lodgerId,jdbcType=INTEGER},
+      Operator = #{operator,jdbcType=INTEGER},
+      Remark = #{remark,jdbcType=VARCHAR}
+    where Check_Id = #{checkId,jdbcType=INTEGER}
+  </update>
+</mapper>

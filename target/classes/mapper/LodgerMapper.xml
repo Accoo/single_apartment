@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gdou.mapper.LodgerMapper" >
+  <resultMap id="BaseResultMap" type="com.gdou.model.Lodger" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="Roomer_Name" property="roomerName" jdbcType="VARCHAR" />
+    <result column="Roomer_Sex" property="roomerSex" jdbcType="VARCHAR" />
+    <result column="Roomer_Photo" property="roomerPhoto" jdbcType="VARCHAR" />
+    <result column="Roomer_ID" property="roomerId" jdbcType="VARCHAR" />
+    <result column="Roomer_Age" property="roomerAge" jdbcType="INTEGER" />
+    <result column="Mobilephone" property="mobilephone" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, Roomer_Name, Roomer_Sex, Roomer_Photo, Roomer_ID, Roomer_Age, Mobilephone
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from lodger
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByRoomerId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from lodger
+    where Roomer_ID = #{roomerId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from lodger
+    where Roomer_ID = #{roomerId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.gdou.model.Lodger" >
+    insert into lodger (Id, Roomer_Name, Roomer_Sex,
+      Roomer_Photo, Roomer_ID, Roomer_Age,
+      Mobilephone)
+    values (#{id,jdbcType=INTEGER}, #{roomerName,jdbcType=VARCHAR}, #{roomerSex,jdbcType=VARCHAR},
+      #{roomerPhoto,jdbcType=VARCHAR}, #{roomerId,jdbcType=VARCHAR}, #{roomerAge,jdbcType=INTEGER},
+      #{mobilephone,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.gdou.model.Lodger" >
+    update lodger
+    set Roomer_Name = #{roomerName,jdbcType=VARCHAR},
+      Roomer_Sex = #{roomerSex,jdbcType=VARCHAR},
+      Roomer_Photo = #{roomerPhoto,jdbcType=VARCHAR},
+      Roomer_ID = #{roomerId,jdbcType=VARCHAR},
+      Roomer_Age = #{roomerAge,jdbcType=INTEGER},
+      Mobilephone = #{mobilephone,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
